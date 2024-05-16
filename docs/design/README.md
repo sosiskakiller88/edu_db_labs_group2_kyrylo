@@ -168,4 +168,8 @@ Action "0.*" -- "1.1" User
 
 @enduml
 
+## Реляційна схема
 
+<p align="center">
+  <img src="./media/relationalSchema.png" width="700">
+</p>
