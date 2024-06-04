@@ -162,24 +162,18 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 ## RESTfull сервіс для управління даними
 ### Model
 ```Java
-package com.example.db6;
+package com.example.dblab6;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "action")
-public class ActionModel {
-    @jakarta.persistence.Id
+@Table(name = "role")
+public class RoleModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String description;
-    private Integer userID;
 
     public Integer getId() {
         return id;
@@ -205,21 +199,12 @@ public class ActionModel {
         this.description = description;
     }
 
-    public Integer getUserID() {
-        return userID;
-    }
-
-    public void setUserID(Integer userID) {
-        this.userID = userID;
-    }
-
     @Override
     public String toString() {
-        return "ActionModel{" +
+        return "RoleModel{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", userID=" + userID +
                 '}';
     }
 }
@@ -228,21 +213,20 @@ public class ActionModel {
 ### Repository
 
 ```Java
-package com.example.db6;
+package com.example.dblab6;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ActionRepository extends JpaRepository<ActionModel, Integer> {
-
+public interface RoleRepository extends JpaRepository <RoleModel, Integer> {
 }
 ```
 
 ### Controller
 
 ```Java
-package com.example.db6;
+package com.example.dblab6;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -251,42 +235,41 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class ActionController {
+public class RoleController {
     @Autowired
-    private ActionRepository actionRepository;
+    private RoleRepository roleRepository;
 
-    @GetMapping("/get-actions")
-    public List<ActionModel> getRoles() {
-        return actionRepository.findAll();
+    @GetMapping("/get-roles")
+    public List<RoleModel> getRoles() {
+        return roleRepository.findAll();
     }
 
-    @GetMapping("/get-actions/{id}")
-    public Optional<ActionModel> getRoleById(@PathVariable Integer id) {
-        return actionRepository.findById(id);
+    @GetMapping("/get-role/{id}")
+    public Optional<RoleModel> getRoleById(@PathVariable Integer id) {
+        return roleRepository.findById(id);
     }
 
-    @PostMapping("/add-action")
-    public ActionModel addRole(@RequestBody ActionModel actionModel) {
-        return actionRepository.save(actionModel);
+    @PostMapping("/add-role")
+    public RoleModel addRole(@RequestBody RoleModel roleModel) {
+        return roleRepository.save(roleModel);
     }
 
-    @DeleteMapping("/delete-action/{id}")
+    @DeleteMapping("/delete-role/{id}")
     public String deleteRole(@PathVariable Integer id) {
-        actionRepository.deleteById(id);
-        if (actionRepository.findById(id).isEmpty()) {
-            return "action successfully deleted";
+        roleRepository.deleteById(id);
+        if (roleRepository.findById(id).isEmpty()) {
+            return "role successfully deleted";
         } else {
-            return "error, action wasn't deleted";
+            return "error, role wasn't deleted";
         }
     }
 
-    @PutMapping("/update-action/{id}")
-    public ActionModel updateAction(@PathVariable Integer id, @RequestBody ActionModel actionModel) {
-        ActionModel action = actionRepository.findById(id).orElseThrow();
-        action.setName(actionModel.getName());
-        action.setDescription(actionModel.getDescription());
-        action.setUserID(actionModel.getUserID());
-        return actionRepository.save(action);
+    @PutMapping("/update-role/{id}")
+    public RoleModel updateRole(@PathVariable Integer id, @RequestBody RoleModel roleModel){
+        RoleModel role = roleRepository.findById(id).orElseThrow();
+        role.setName(roleModel.getName());
+        role.setDescription(roleModel.getDescription());
+        return role;
     }
 }
 ```
